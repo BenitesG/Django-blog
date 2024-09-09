@@ -1,6 +1,7 @@
 from blog.models import Category, Tag
 from django.contrib import admin
 from blog.models import Category, Page, Post, Tag
+from django_summernote.admin import SummernoteModelAdmin
 
 
 @admin.register(Tag)
@@ -26,8 +27,23 @@ class CategoryAdmin(admin.ModelAdmin):
         "slug": ('name',),
     }
 
+@admin.register(Page)
+class PageAdmin(SummernoteModelAdmin):
+    summernote_fields = ('content',)
+    list_display = 'id', 'title', 'is_published',
+    list_display_links = 'title',
+    search_fields = 'id', 'slug', 'title', 'content',
+    list_per_page = 50
+    list_filter = 'is_published',
+    list_editable = 'is_published',
+    ordering = '-id',
+    prepopulated_fields = {
+        "slug": ('title',),
+    }    
+
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(SummernoteModelAdmin):
+    summernote_fields = ('content',)
     list_display = 'id', 'title', 'is_published',  'created_by',
     list_display_links = 'title',
     search_fields = 'id', 'slug', 'title', 'excerpt', 'content',
